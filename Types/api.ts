@@ -5,4 +5,5 @@ export interface RepoResponse {
     private: boolean;
     url: string;
     updated_at: string;
+    html_url: string;
 }

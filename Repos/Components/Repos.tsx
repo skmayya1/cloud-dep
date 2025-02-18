@@ -1,11 +1,13 @@
 import { Toast } from '@/lib/Toast';
 import { RepoResponse } from '@/Types/api';
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import { IoSearchOutline } from "react-icons/io5";
 
 
 export const Repos = () => {
+  const router = useRouter();
   const [ReposData, setReposData] = useState<RepoResponse[] | null>(null)
   
         useEffect(() => {
@@ -41,10 +43,11 @@ export const Repos = () => {
         }
     }
     return "just now";
-}
+  }
 
-// Example usage
-console.log(timeAgo("2025-01-14T17:45:45Z"));
+  const handleImport = (repo: RepoResponse) => { 
+    router.push(`/deploy?s=${repo.html_url}`);
+  }
 
   return (
     <div className='w-[40%] max-h-full h-fit rounded-lg border border-zinc-800 p-8 bg-[#111111] flex justify-center'>
@@ -71,7 +74,7 @@ console.log(timeAgo("2025-01-14T17:45:45Z"));
                       {timeAgo(repo.updated_at)}
                     </div>
                    </div>
-                <button className='text-sm bg-zinc-300 text-zinc-950 px-3 py-2 rounded-md'>Import</button>
+                <button onClick={()=>handleImport(repo)} className='text-sm bg-zinc-300 text-zinc-950 px-3 py-2 rounded-md'>Import</button>
               </div>
             ))
             
