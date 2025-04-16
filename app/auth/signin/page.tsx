@@ -25,6 +25,7 @@ const Page = () => {
                   async () => { 
                   await authClient.signIn.social({
                     provider: "github",
+                    callbackURL: "/dashboard"
                 })}
                 , {
                     loading: "Authenticating...",

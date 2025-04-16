@@ -1,4 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400..700;1,400..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -10,14 +12,34 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: var(--platinum);
+    --foreground: var(--darker);
   }
+}
+
+:root {
+  --darker: #1B2021;
+  --dark: #30343F;
+  --blue: #5AB1BB;
+  --yellow: #F7DD 72; 
+  --light: #05B2DC ;
+  --lavendar :#D0CFEC;
+  --platinum: #E7E5DF;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: "Cabin", serif;
+  font-family: "Geist", sans-serif;
   font-optical-sizing: auto;
+}
+
+@theme {
+  --color-darker: #1B2021;
+  --color-dark: #30343F;
+  --color-blue: #5AB1BB;
+  --color-yellow: #F7DD72;
+  --color-light: #05B2DC;
+  --color-lavendar: #D0CFEC;
+  --color-platinum: #E7E5DF;
 }

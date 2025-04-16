@@ -5,12 +5,11 @@ import axios from "axios";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export const Page = () => {
+ const Page = () => {
   const searchParams = useSearchParams();
     const repoUrl = searchParams.get("s");
-
     const [ReposData, setReposData] = useState<RepoResponse[] | null>(null)
-  
+    
     useEffect(() => {
         async function fetchData() { 
             const res = await axios.get('/api/repos');
@@ -30,3 +29,4 @@ export const Page = () => {
   )
 }
 
+export default Page;

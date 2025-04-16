@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth"
 import { headers } from "next/headers";
 import prisma from "@/DB/prisma";
@@ -6,15 +6,18 @@ import axios from "axios";
 
 const GITHUB_API_URL = "https://api.github.com/user/repos?sort=updated&per_page=5";
 
-export async function GET() {
+export async function GET(req:NextRequest) {
     try {
         //session
-         const session = await auth.api.getSession({
+        const session = await auth.api.getSession({
          headers: await headers()  
          })
         if (!session) {
             return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
         }
+        // const { search } = req.nextUrl.searchParams;
+
+        
         //fetching access token
         const Data = await prisma.user.findUnique({
             where: {
