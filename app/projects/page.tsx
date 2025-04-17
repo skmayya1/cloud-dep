@@ -1,10 +1,11 @@
 "use client";
-import { NewProjectModal } from '@/components/NewProjectModal';
+import { NewProjectModal } from '@/components/projects/NewProjectModal';
 import { authClient } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import { IoAddOutline } from 'react-icons/io5';
 import { motion } from 'framer-motion';
+import Button from '@/components/Button';
 const Page = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     //Session
@@ -20,18 +21,15 @@ const Page = () => {
     
 
   return (
-    <div className='h-screen w-full p-8'> 
+    <div className='h-full w-full max-w-[1600px] mx-auto py-8'> 
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-semibold">Projects</h1>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 text-sm bg-[#FCFCFC] hover:bg-white text-[#1C1C1C] rounded-md transition-all hover:shadow-lg"
-          >
+          <Button onClick={() => setIsModalOpen(true)} >
             <IoAddOutline size={18} />
             New Project
-          </button>
+          </Button>
         </div>
-
+       
         {isModalOpen && (
           <motion.div 
             initial={{ opacity: 0 }}

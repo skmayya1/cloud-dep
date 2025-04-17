@@ -34,12 +34,3 @@ body {
   font-optical-sizing: auto;
 }
 
-@theme {
-  --color-darker: #1B2021;
-  --color-dark: #30343F;
-  --color-blue: #5AB1BB;
-  --color-yellow: #F7DD72;
-  --color-light: #05B2DC;
-  --color-lavendar: #D0CFEC;
-  --color-platinum: #E7E5DF;
-}
