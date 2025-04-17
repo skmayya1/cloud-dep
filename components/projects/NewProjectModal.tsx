@@ -8,6 +8,7 @@ import { IoClose } from "react-icons/io5";
 import Button from '../Button';
 import { motion, AnimatePresence } from 'framer-motion';
 import Input from '../Input';
+import { useDeployment } from '@/contexts/DeploymentContext';
 interface NewProjectModalProps {
   onClose: () => void;
 }
@@ -19,7 +20,7 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({ onClose }) => 
   const [branches, setBranches] = useState<BranchResponse[] | null>(null)
   const [isLoadingBranches, setIsLoadingBranches] = useState(false);
   const [selectedBranch, setSelectedBranch] = useState<string | null>(branches?.[0]?.name || null);
-  
+  const { setDeployPresets, deployPreset } = useDeployment();
   useEffect(() => {
     if (branches) {
       setSelectedBranch(branches?.[0]?.name || null);
@@ -199,6 +200,12 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({ onClose }) => 
                                 className='' 
                                 onClick={() => {
                                   if (selectedBranch) {
+                                    localStorage.setItem('Repo', JSON.stringify({
+                                      Repo: {
+                                        ...repo,
+                                        branch: selectedBranch
+                                      }
+                                    }));
                                     router.push(`/projects/new?repo=${repo.name}&branch=${selectedBranch}`)
                                   }
                                 }}

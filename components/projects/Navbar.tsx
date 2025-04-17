@@ -13,7 +13,7 @@ const Navbar = () => {
 
 
     return (
-        <div className='h-16 w-full max-w-[1600px] mx-auto border-b border-zinc-300 flex items-center justify-center'>
+        <div className='h-full w-full max-w-[1600px] mx-auto border-b border-zinc-300 flex items-center justify-center'>
             <div className="flex items-center justify-between w-full h-full">
                 <div className="text-md tracking-wide font-semibold h-full flex items-center gap-4">
                     <p className='text-dark pr-5 h-full border-r border-zinc-300 flex items-center'>CloudDepo</p>

@@ -5,17 +5,7 @@ import React from 'react'
 const page = () => {
   return (
     <div className='h-full w-full flex items-center justify-center'>
-      <NewProject
-       RepoDetails={
-        {
-          branch:"master",
-          name:"atsend",
-          owner:"Skmayya",
-          url:"Test",
-          updated_at: new Date().toISOString()
-        }
-      }
-      />
+      <NewProject/>
     </div>
   )
 }

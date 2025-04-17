@@ -10,6 +10,9 @@ export interface RepoResponse {
     owner: {
         login: string;
     }
+    default_branch: string;
+    branches: BranchResponse[];
+    branch :string | null;
 }
 
 export interface BranchResponse {
