@@ -54,14 +54,14 @@ export function DeploymentProvider({ children }: { children: React.ReactNode }) 
         name: '',
         Repo: JSON.parse(repo).Repo,
         BuildPreset: { Preset: "NextJS" },
-        RootDirectory: "",
+        RootDirectory: "./",
         OutputDirectory: "",
-        EnvironmentVariables: [],
-        commands:{
-          build: "",
-          install: ""
-        },
-        output: ""
+        EnvironmentVariables: [{
+          key:"",
+          value:""
+        }],
+        commands: NextJSBuildPreset,
+        output: ".next"
       });
     }
   }, []);
@@ -70,6 +70,17 @@ export function DeploymentProvider({ children }: { children: React.ReactNode }) 
     setDeployPreset(preset);
   }
 
+  const NextJSBuildPreset: DeployPreset = {
+    RootDirectory: "./",
+    OutputDirectory: ".next",
+    EnvironmentVariables: [],
+    commands: {
+      build: "npm run build",
+      install: "npm install"
+    },
+    output: ".next"
+    
+  }
   return (
     <DeploymentContext.Provider
       value={{

@@ -3,7 +3,8 @@ import Input from '../Input'
 import { FaGithub } from "react-icons/fa6";
 import { CgGitFork } from "react-icons/cg";
 import { BsArrowUpRightSquareFill } from "react-icons/bs";
-import { IoIosArrowDown } from "react-icons/io";
+import { IoMdArrowDropdown } from "react-icons/io";
+import { motion, AnimatePresence } from "framer-motion";
 
 import Button from '../Button';
 import { RepoResponse } from '@/Types/api';
@@ -36,9 +37,9 @@ const NewProject = () => {
   const [buildPresetsOpen, setBuildPresetsOpen] = useState(false);
   const [EditableDeployPreset, setEditableDeployPreset] = useState(buildPresets?.Preset!=="NextJS");
   const [ConfigModalOpen, setConfigModalOpen] = useState<ConfigModalProps | null>(null);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   const {   setDeployPresets ,deployPreset , Deploy
-
   } = useDeployment();
 
 
@@ -51,12 +52,43 @@ const NewProject = () => {
     setEditableDeployPreset(buildPresets?.Preset!=="NextJS");
   }, [buildPresets]);
 
+  const modalVariants = {
+    hidden: { 
+      opacity: 0,
+      height: 0,
+      transition: {
+        duration: 0.2,
+        ease: "easeInOut"
+      }
+    },
+    visible: { 
+      opacity: 1,
+      height: "auto",
+      transition: {
+        duration: 0.3,
+        ease: "easeInOut",
+        delay: 0.2
+      }
+    }
+  };
+
+  const handleConfigModalToggle = (type: "Build" | "Environment") => {
+    if (ConfigModalOpen?.type === type) {
+      setConfigModalOpen(null);
+    } else {
+      setConfigModalOpen(null);
+      setTimeout(() => {
+        setConfigModalOpen({ type });
+      }, 300);
+    }
+  };
+
   return (
     <div className='w-full h-full flex max-w-[1000px] gap-10 items-center justify-center relative'>
       <h1 className='text-2xl w-full font-semibold text-darker border-b border-zinc-300 pb-3 absolute top-4 left-0'>
         New Project
       </h1>
-      <form  className='w-[50%] h-full flex flex-col items-center justify-center py-10 space-y-3'>
+      <div  className='w-[50%] h-full flex flex-col items-center justify-center py-10 space-y-3'>
         <div className="w-full flex py-4 px-2 border border-zinc-300 rounded-lg  shadow-inner bg-lavendar  gap-3">
           <div className='flex items-center gap-2'>
             <FaGithub size={18} />
@@ -130,15 +162,57 @@ const NewProject = () => {
             }
           }}
         />
-
-          <div onClick={() => setConfigModalOpen(ConfigModalOpen?.type == "Build" ? null : {type: "Build"})} className="flex w-full items-center justify-between gap-2 border border-zinc-400 rounded-lg px-4 py-1.5">
-            <p className='text-base py-2 font-medium text-darker self-start '>Build & Output</p>
-            <BsArrowUpRightSquareFill size={18} color='#5AB1BB' />
+         
+          <div onClick={() => handleConfigModalToggle("Build")} 
+               className="flex w-full items-center justify-between gap-2 border border-zinc-400 rounded-lg px-4 py-1.5">
+            <p className='text-base py-2 font-medium text-darker self-start'>Build & Output</p>
+            <motion.div 
+              animate={{ rotate: ConfigModalOpen?.type === "Build" ? 0 : -90 }}
+              transition={{ duration: 0.2 }}
+            >
+              <IoMdArrowDropdown size={18} />
+            </motion.div>
           </div>
-          <div onClick={() => setConfigModalOpen(ConfigModalOpen?.type == "Environment" ? null : {type: "Environment"})} className="flex w-full items-center justify-between gap-2 border border-zinc-400 rounded-lg px-4  py-1.5">
-            <p className='text-base py-2 font-medium text-darker self-start '>Environment Variables</p>
-            <BsArrowUpRightSquareFill size={18} color='#5AB1BB' />
-        </div>
+
+          <AnimatePresence>
+            {ConfigModalOpen?.type === "Build" && (
+              <motion.div 
+                variants={modalVariants}
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
+                className="w-full h-fit flex items-center justify-center overflow-hidden"
+              >
+                <DeploymentConfigModal type={ConfigModalOpen.type} />
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <div onClick={() => handleConfigModalToggle("Environment")} 
+               className="flex w-full items-center justify-between gap-2 border border-zinc-400 rounded-lg px-4 py-1.5">
+            <p className='text-base py-2 font-medium text-darker self-start'>Environment Variables</p>
+            <motion.div 
+              animate={{ rotate: ConfigModalOpen?.type === "Environment" ? 0 : -90 }}
+              transition={{ duration: 0.2 }}
+            >
+              <IoMdArrowDropdown size={18} />
+            </motion.div>
+          </div>
+
+          <AnimatePresence>
+            {ConfigModalOpen?.type === "Environment" && (
+              <motion.div 
+                variants={modalVariants}
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
+                className="w-full h-fit flex items-center justify-center overflow-hidden"
+              >
+                <DeploymentConfigModal type={ConfigModalOpen.type} />
+              </motion.div>
+            )}
+          </AnimatePresence>
+
         <Button
           onClick={Deploy}
           className='w-full py-4 flex items-center justify-center text-base font-medium'
@@ -146,12 +220,8 @@ const NewProject = () => {
           >
           Deploy
         </Button>
-      </form>
-      {ConfigModalOpen && 
-       <div className="w-[50%] h-[60%]">
-        <DeploymentConfigModal type={ConfigModalOpen.type} />
-       </div>
-      }
+      </div>
+
     </div>
   )
 }
