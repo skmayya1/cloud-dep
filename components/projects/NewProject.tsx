@@ -42,12 +42,6 @@ const NewProject = () => {
   const {   setDeployPresets ,deployPreset , Deploy
   } = useDeployment();
 
-
-
-  const handleBuildPresets = (preset: BuildPreset) => {
-    setBuildPresets(preset);
-  }
-
   useEffect(() => {
     setEditableDeployPreset(buildPresets?.Preset!=="NextJS");
   }, [buildPresets]);
@@ -100,7 +94,7 @@ const NewProject = () => {
           </div>
           <div className='flex items-center'>
             <CgGitFork size={17} color='gray' />
-            <h1 className='text-sm font-medium text-zinc-600'>{deployPreset?.Repo?.branch || deployPreset?.Repo.default_branch}</h1>
+            <h1 className='text-sm font-medium text-zinc-600'>{deployPreset?.Repo?.branch || deployPreset?.Repo?.default_branch}</h1>
           </div>
         </div>
         <Input

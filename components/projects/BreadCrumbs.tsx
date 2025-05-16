@@ -9,8 +9,8 @@ const BreadCrumbs = () => {
     const path = pathname.split('/').filter(Boolean);
     const router = useRouter();
     return (
-    <div className='flex items-center gap-2'>
-        <GrProjects className='text-zinc-500' size={13} />
+    <div className='flex items-center gap-2 '>
+        <GrProjects className='text-zinc-500' size={14} />
         {path.map((p, index) => (   
             <div key={index} className='flex items-center gap-2'>
                 <div 

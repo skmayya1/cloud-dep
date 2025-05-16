@@ -1,5 +1,8 @@
 "use client";
+import { Toast } from "@/lib/Toast";
 import { RepoResponse } from "@/Types/api";
+import { redirect } from "next/dist/server/api-utils";
+import { useRouter } from "next/navigation";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 interface BuildPreset {
@@ -8,7 +11,7 @@ interface BuildPreset {
 
 interface DeployPreset {
   name: string;
-  Repo: RepoResponse;
+  Repo?: RepoResponse;
   BuildPreset: BuildPreset;
   RootDirectory: string;
   OutputDirectory: string;
@@ -16,7 +19,7 @@ interface DeployPreset {
     key: string;
     value: string;
   }[];
-  commands:{
+  commands: {
     build: string;
     install: string;
   }
@@ -32,7 +35,9 @@ interface DeploymentContextType {
   setBuildPreset: (preset: BuildPreset) => void;
   isEditablePreset: boolean;
   setIsEditablePreset: (isEditable: boolean) => void;
-  Deploy: () => void;
+  Deploy: () => void; 
+  changePreset: (preset: BuildPreset) => void; // Add this line
+
 }
 
 const DeploymentContext = createContext<DeploymentContextType | undefined>(undefined);
@@ -42,10 +47,24 @@ export function DeploymentProvider({ children }: { children: React.ReactNode }) 
   const [deployPreset, setDeployPreset] = useState<DeployPreset | null>(null);
   const [buildPreset, setBuildPreset] = useState<BuildPreset>({ Preset: "NextJS" });
   const [isEditablePreset, setIsEditablePreset] = useState(false);
-  
-  const Deploy = () =>{
+  const router = useRouter()
+  const Deploy = () => {
+    if (!deployPreset) {
+      Toast("Deployment preset is missing", "error");
+      return;
+    }
     console.log(deployPreset);
-  } 
+    
+    const { name, Repo, RootDirectory, output, commands } = deployPreset;
+
+    if (!name || !Repo || !RootDirectory || !output || !commands.build || !commands.install) {
+      Toast(" Please fill all required fields.", "error");
+      return;
+    }
+
+    Toast("Deployment in queue", "loading");
+    router.push('/projects');
+  }
 
   useEffect(() => {
     const repo = localStorage.getItem('Repo');
@@ -57,10 +76,10 @@ export function DeploymentProvider({ children }: { children: React.ReactNode }) 
         RootDirectory: "./",
         OutputDirectory: "",
         EnvironmentVariables: [{
-          key:"",
-          value:""
+          key: "",
+          value: ""
         }],
-        commands: NextJSBuildPreset,
+        commands: NextJSBuildPreset.commands,
         output: ".next"
       });
     }
@@ -70,6 +89,10 @@ export function DeploymentProvider({ children }: { children: React.ReactNode }) 
     setDeployPreset(preset);
   }
 
+  const changePreset = (preset: BuildPreset) => {
+    setBuildPreset(preset);
+  };
+
   const NextJSBuildPreset: DeployPreset = {
     RootDirectory: "./",
     OutputDirectory: ".next",
@@ -78,8 +101,9 @@ export function DeploymentProvider({ children }: { children: React.ReactNode }) 
       build: "npm run build",
       install: "npm install"
     },
-    output: ".next"
-    
+    output: ".next",
+    BuildPreset: { Preset: "NextJS" },
+    name: ""
   }
   return (
     <DeploymentContext.Provider
@@ -92,7 +116,8 @@ export function DeploymentProvider({ children }: { children: React.ReactNode }) 
         setBuildPreset,
         isEditablePreset,
         setIsEditablePreset,
-        Deploy
+        Deploy,
+        changePreset
       }}
     >
       {children}

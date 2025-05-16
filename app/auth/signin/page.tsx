@@ -20,7 +20,7 @@ const Page = () => {
   if (isPending || (session && session)) return null;
 
   return (
-      <div className='h-screen w-full bg-[#0a0a0a] text-white flex items-center justify-center'>
+      <div className='h-screen w-full  flex items-center justify-center'>
         <div className="h-[25%] w-[30%] flex items-center flex-col justify-center gap-10">
           <h1 className='text-3xl'>Sign In to Tannva</h1>
         <button
