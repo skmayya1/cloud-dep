@@ -206,7 +206,7 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({ onClose }) => 
                                         branch: selectedBranch
                                       }
                                     }));
-                                    router.push(`/projects/new?repo=${repo.name}&branch=${selectedBranch}`)
+                                    router.push(`/dashboard/new?repo=${repo.name}&branch=${selectedBranch}`)
                                   }
                                 }}
                                 dark
