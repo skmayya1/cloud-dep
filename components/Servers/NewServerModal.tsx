@@ -40,22 +40,19 @@ const NewServerModal: React.FC<NewServerModalProps> = ({
             </button>
             <div className="w-full h-full flex flex-col items-center justify-start px-4 gap-6">
                 <h1 className='flex self-start w-full border-t border-zinc-300 py-2  text-lg'>Add server</h1>
-                <div className="w-full h-fit flex flex-col items-start gap-8 justify-start ">
+                <div className="w-full h-fit flex flex-col items-start gap-6 justify-start ">
                     <p className='text-sm text-zinc-600 select-none'>Select Provider</p>
                     <div className="flex gap-5 px-5">
                         <div className="bg-black text-white flex gap-3 rounded-lg p-5 border-4 border-blue">
                             <RenderIcon />
                             Render
                         </div>
-                        <div className="bg-black text-white flex gap-3 rounded-lg p-5 border-4">
-                            ??? ??? ???
-                        </div>
                     </div>
                 </div>
                 <div className="w-full h-fit flex flex-col items-start gap-6 justify-start ">
                     <Input
                         name='name'
-                        placeholder='Server Name'
+                        placeholder='render-01'
                         type='text'
                         value={NewServer.name}
                         label='label / nickname'
@@ -78,6 +75,7 @@ const NewServerModal: React.FC<NewServerModalProps> = ({
                  onClick={() => {
                     if (NewServer.ApiKey && NewServer.name) {
                         Toast('Adding server...', 'loading')
+                        onClose()
                     } else {
                         NewServer.ApiKey && NewServer.name ? '' :  Toast('Please fill all fields', 'error')
                     }

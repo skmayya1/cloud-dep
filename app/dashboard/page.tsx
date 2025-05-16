@@ -2,7 +2,7 @@
 import { NewProjectModal } from '@/components/projects/NewProjectModal';
 import { authClient } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { IoAddOutline } from 'react-icons/io5';
 import { motion } from 'framer-motion';
 import Button from '@/components/Button';
@@ -10,13 +10,54 @@ import Servers from '@/components/Servers';
 import { useServer } from '@/contexts/ServerContext';
 import NewServerModal from '@/components/Servers/NewServerModal';
 
+interface IndicatorStyle {
+  width: number;
+  height: number;
+  transform: string;
+  x?: number;
+}
+
 const Page = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<'projects' | 'servers'>('projects'); // State for toggling
+  const [activeTab, setActiveTab] = useState<'projects' | 'servers'>('projects');
+  const [indicatorStyle, setIndicatorStyle] = useState<IndicatorStyle>({
+    width: 0,
+    height: 0,
+    transform: '',
+  });
   const router = useRouter();
   const { data, isPending } = authClient.useSession();
   const session = data?.session; 
-  const { isAddServerModalOpen , setIsAddServerModalOpen} = useServer();
+  const { isAddServerModalOpen, setIsAddServerModalOpen } = useServer();
+  
+  // Create refs for the tab elements
+  const projectsTabRef = useRef<HTMLSpanElement>(null);
+  const serversTabRef = useRef<HTMLSpanElement>(null);
+
+  // Update indicator position whenever active tab changes
+  useEffect(() => {
+    const updateIndicator = () => {
+      const activeTabRef = activeTab === 'projects' ? projectsTabRef : serversTabRef;
+      if (activeTabRef.current) {
+        const tabElement = activeTabRef.current;
+        const rect = tabElement.getBoundingClientRect();
+        
+        setIndicatorStyle({
+          width: rect.width,
+          height: rect.height,
+          transform: `translateX(${tabElement.offsetLeft}px)`,
+          x: tabElement.offsetLeft
+        });
+      }
+    };
+    
+    // Initial update
+    updateIndicator();
+    
+    // Also update on window resize to ensure correct positioning
+    window.addEventListener('resize', updateIndicator);
+    return () => window.removeEventListener('resize', updateIndicator);
+  }, [activeTab]);
 
   useEffect(() => {
     if (!isPending && !session) {
@@ -28,15 +69,30 @@ const Page = () => {
 
   return (
     <div className="h-full w-full max-w-[1600px] mx-auto py-4">
-      <div className="py-5 flex items-center gap-5">
+      <div className="py-5 flex items-center gap-5 relative">
+        {/* Animated background indicator */}
+        <motion.div 
+          className="absolute bg-lavendar rounded-xl z-0"
+          initial={false}
+          animate={{
+            width: indicatorStyle.width,
+            height: indicatorStyle.height,
+            x: indicatorStyle.x || 0
+          }}
+          transition={{ type: "spring", stiffness: 500, damping: 30 }}
+        />
+        
+        {/* Tab buttons */}
         <span
-          className={`cursor-pointer py-1 px-4 ${activeTab === 'projects' ? ' rounded-xl bg-lavendar' : ''}`}
+          ref={projectsTabRef}
+          className={`cursor-pointer py-1 px-4 relative z-10 ${activeTab === 'projects' ? 'text-dark' : 'text-gray-600'}`}
           onClick={() => setActiveTab('projects')}
         >
           Projects
         </span>
         <span
-          className={`cursor-pointer py-1 px-4 ${activeTab === 'servers' ? ' rounded-xl bg-lavendar' : ''}`}
+          ref={serversTabRef}
+          className={`cursor-pointer py-1 px-4 relative z-10 ${activeTab === 'servers' ? 'text-dark' : 'text-gray-600'}`}
           onClick={() => setActiveTab('servers')}
         >
           Servers
@@ -45,7 +101,7 @@ const Page = () => {
 
       {activeTab === 'projects' && (
         <div className='h-full w-full'>
-          <div className="flex  items-start justify-end mb-8">
+          <div className="flex items-start justify-end mb-8">
             <Button onClick={() => setIsModalOpen(true)}>
               <IoAddOutline size={18} />
               New Project
